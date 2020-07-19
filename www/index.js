@@ -23,7 +23,12 @@ let camera = wasm.PerspectiveCamera.new(eye, center, up, toRadians(40), width / 
 let round = 0;
 let y = height - 1;
 
-let subPixelSamplingCount = 100;
+let subpixel = document.querySelector("#subpixel");
+let subPixelSamplingCount = parseInt(subpixel.value);
+
+subpixel.addEventListener("change", e => {
+    subPixelSamplingCount = parseInt(e.target.value);
+});
 
 let paused = true;
 let toggle = document.querySelector("#toggle");
@@ -31,12 +36,25 @@ let toggle = document.querySelector("#toggle");
 toggle.addEventListener("click", e => {
     paused = !paused;
     if (!paused) {
-        toggle.innerHTML = "pause"
+        toggle.innerHTML = "pause";
         onDraw();
     } else {
-        toggle.innerHTML = "start"
+        toggle.innerHTML = "start";
     }
-})
+});
+
+let clear = document.querySelector("#clear");
+
+clear.addEventListener("click", e => {
+    round = 0;
+    y = height - 1;
+
+    for (let i = 0; i < buffer.data.length; i++) {
+        buffer.data[i] = 0;
+    }
+
+    context.clearRect(0, 0, width, height);
+});
 
 function onDraw() {
     if (paused) {
